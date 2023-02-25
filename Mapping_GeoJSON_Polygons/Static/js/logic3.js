@@ -34,18 +34,24 @@ let map = L.map("mapid", {
 L.control.layers(baseMaps).addTo(map);
 
 // Accessing the airport GeoJSON URL
-let airportData = "https://raw.githubusercontent.com/ericksonvo/Mapping_Earthquakes/4e5b95771fb5324c037577df6f904c0dcc2a454d/majorAirports.json";
+let torontoData = "https://raw.githubusercontent.com/ericksonvo/Mapping_Earthquakes/mapping_geojson_linestrings/torontoRoutes.json";
 
-// Grabbing out GeoJSON data
-d3.json(airportData).then((data)=>{
-    console.log(data);
+// Create a style for the lines.
+let myStyle = {
+  color: "#ffffa1",
+  weight: 2
+}
+
+// Grabbing our GeoJSON data.
+d3.json(torontoData).then((data)=>{
+  console.log(data);
 // create a GeoJSON layer with the retrived data
-  L.geoJSON(data, {
-  pointToLayer: function(feature, a) {
-    console.log(feature);
-    return L.marker(a)
-    .bindPopup("<h2>" + "Airport Code:" + " " + feature.properties.faa + "</h2> <hr> <h3> "+ "Airport Name:" + " " + feature.properties.name + "</h3>" )}
-  }).addTo(map);
+L.geoJSON(data, {
+  style: myStyle,
+  onEachFeature: (feature, a) => {
+
+  a.bindPopup("<h2>" + "Airline:" + " " + feature.properties.airline + "</h2> <hr> <h3> "+ "Destination:" + " " + feature.properties.src + "</h3>" )}
+}).addTo(map);
 }
 )
 // Then we add our 'graymap' tile layer to the map.
