@@ -3,8 +3,8 @@
 console.log("working");
 
 
-// Create the map object with center at the San Francisco airport.
-let map = L.map('mapid').setView([37.5, -122.5], 10);
+// Create the map object with center and zoom level.
+let map = L.map('mapid').setView([30, 30], 2);
 
 // Add GeoJSON data.
 let sanFranAirport =
@@ -35,17 +35,6 @@ L.geoJSON(sanFranAirport, {
     return L.marker(latlng)
     .bindPopup("<h2>" + "Airport Code:" + " " + feature.properties.faa + "</h2> <hr> <h3> "+ "Airport Name:" + " " + feature.properties.name + "</h3>" );
   }
-
-// }).addTo(map);
-// Grabbing our GeoJSON data. Using onEachFeature:
-// L.geoJSON(sanFranAirport, {
-  // We turn each feature into a marker on the map.
-  // onEachFeature: function(feature, layer) {
-    // console.log(layer);
-    // return L.marker(layer)
-  //   .bindPopup("<h2>" + feature.properties.name + "</h2> <hr> <h3> " + feature.properties.city + "," + feature.properties.country + "</h3>" );
-  // }
-
 }).addTo(map);
 
 // We create the tile layer that will be the background of our map.
@@ -54,24 +43,16 @@ attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap
     maxZoom: 18,
     accessToken: API_KEY
 });
+// Accessing the airport GeoJSON URL
+let airportData = "https://raw.githubusercontent.com/ericksonvo/Mapping_Earthquakes/4e5b95771fb5324c037577df6f904c0dcc2a454d/majorAirports.json";
 
-
+// Grabbing out GeoJSON data
+d3.json(airportData).then((data)=>{
+    console.log(data);
+// create a GeoJSON layer with the retrived data
+  L.geoJSON(data).addTo(map);
+}
+)
 // Then we add our 'graymap' tile layer to the map.
 
 streets.addTo(map);
-
-// An array containing each city's location, state, and population.
-// Get data from cities.js
-let cityData = cities;
-
-//Loop through the cities array
-
-cities.forEach((city) => {
-    console.log(city)
-    L.circleMarker(city.location, {
-      radius: city.population/100000
-    })
-    .bindPopup("<h2>" + city.city + ", " + city.state + "</h2> <hr> <h3>Population " + city.population + "</h3>")
-  .addTo(map);
-})
-
