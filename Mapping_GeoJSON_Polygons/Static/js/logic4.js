@@ -6,14 +6,14 @@ console.log("working");
 // let map = L.map('mapid').setView([30, 30], 2);
 
 // We create the tile layer that will be the background of our map.
-let light = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+let streets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v12/tiles/{z}/{x}/{y}?access_token={accessToken}', {
 attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery (c) <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
     accessToken: API_KEY
 });
 
 // We create the dark view tile layer that will be an option for our map.
-let dark = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/dark-v10/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+let satelliteStreets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/tiles/{z}/{x}/{y}?access_token={accessToken}', {
 attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery (c) <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
     accessToken: API_KEY
@@ -21,33 +21,39 @@ attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap
 
 // Create a base layer that holds both maps.
 let baseMaps = {
-    'Light Street Map': light,
-    'Dark Street Map': dark
+    'Streets': streets,
+    'Satellite Streets': satelliteStreets
   };
 
   // Create the map object with a center and zoom level.
 let map = L.map("mapid", {
-    center: [44.0, -80.0],
-    zoom: 2
+    center: [43.7, -79.3],
+    zoom: 11
   });
 // Pass our map layers into our layers control and add the layers control to the map.
 L.control.layers(baseMaps).addTo(map);
 
 // Accessing the airport GeoJSON URL
-let airportData = "https://raw.githubusercontent.com/ericksonvo/Mapping_Earthquakes/4e5b95771fb5324c037577df6f904c0dcc2a454d/majorAirports.json";
+let torontoHoods = "https://raw.githubusercontent.com/ericksonvo/Mapping_Earthquakes/mapping_geojson_polygons/torontoNeighborhoods.json";
+// Create a style for the lines.
+let myStyle = {
+  color: "blue",  
+  fillColor: "#ffffa1",
+  weight: 1
+}
 
-// Grabbing out GeoJSON data
-d3.json(airportData).then((data)=>{
-    console.log(data);
+// Grabbing our GeoJSON data.
+d3.json(torontoHoods).then((data)=>{
+  console.log(data);
 // create a GeoJSON layer with the retrived data
-  L.geoJSON(data, {
-  pointToLayer: function(feature, a) {
-    console.log(feature);
-    return L.marker(a)
-    .bindPopup("<h2>" + "Airport Code:" + " " + feature.properties.faa + "</h2> <hr> <h3> "+ "Airport Name:" + " " + feature.properties.name + "</h3>" )}
-  }).addTo(map);
+L.geoJSON(data, {
+  style: myStyle,
+  onEachFeature: (feature, a) => {
+
+  a.bindPopup("<hr>" + "<h2>" + "Neighborhood:" + " " + feature.properties.AREA_NAME + "</h2> <hr> <h3> " )}
+}).addTo(map);
 }
 )
 // Then we add our 'graymap' tile layer to the map.
 
-light.addTo(map);
+streets.addTo(map);
