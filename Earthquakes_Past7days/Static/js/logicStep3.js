@@ -89,10 +89,10 @@ L.geoJSON(data, {
   // set the style for the circleMarker.
   
   ),
-  style: styleInfo
-//   onEachFeature: (feature, a) => {
+  style: styleInfo,
+  onEachFeature: (feature, a) => {
 
-//   a.bindPopup("<hr>" + "<h2>" + "Neighborhood:" + " " + feature.properties.AREA_NAME + "</h2> <hr> <h3> " )}
+  a.bindPopup("<hr>" + "<h2>" + "Magnitude:" + " " + feature.properties.mag + "</h2> <h3> " + "Location:" + " " + feature.properties.place + " </h3> <hr>" )}
 }).addTo(map);
 })
 // Then we add our 'graymap' tile layer to the map.
